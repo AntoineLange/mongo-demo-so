@@ -17,6 +17,7 @@ package com.example.demomongo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.conversions.Bson;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
@@ -31,7 +32,7 @@ public class DocumentService
 {
     private MongoTemplate mongoTemplate;
 
-    public List<DocumentEntity> getAggregatedDocuments(boolean active, String group, boolean excludeParent)
+    public List<Bson> getAggregatedDocuments(boolean active, String group, boolean excludeParent)
     {
         List<AggregationOperation> stages = new ArrayList<>();
         stages.add(Aggregation.match(Criteria.where("active").is(active).and("group").is(group)));
@@ -45,7 +46,7 @@ public class DocumentService
         }
 
         return mongoTemplate
-            .aggregate(Aggregation.newAggregation(stages), "collection", DocumentEntity.class)
+            .aggregate(Aggregation.newAggregation(stages), "collection", Bson.class)
             .getMappedResults();
     }
 }
